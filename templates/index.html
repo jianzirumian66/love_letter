@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>写给你的信</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'STKaiti', 'KaiTi', '楷体', 'Georgia', serif;
+            background: linear-gradient(135deg, #fdfbfb 0%, #ffe4e1 100%);
+            color: #4a3b32;
+            line-height: 2.2;
+            min-height: 100vh;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        /* 花瓣飘落特效 */
+        .snowflake {
+            position: fixed;
+            top: -10px;
+            color: #ffb6c1;
+            font-size: 20px;
+            z-index: 10;
+            pointer-events: none;
+            animation: fall linear infinite;
+        }
+        @keyframes fall {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+        }
+
+        /* 遮罩层 */
+        #overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 100;
+            background: linear-gradient(135deg, #fdfbfb 0%, #ffe4e1 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            cursor: pointer;
+            transition: opacity 1.2s ease, visibility 1.2s;
+        }
+        #overlay.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+        .heart-icon { font-size: 48px; margin-bottom: 20px; animation: pulse 2s infinite; }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+            100% { transform: scale(1); }
+        }
+        #overlay p { font-size: 20px; color: #d46a7e; letter-spacing: 2px; font-weight: bold; }
+
+        /* 信纸卡片 */
+        #letter-content {
+            max-width: 680px;
+            margin: 40px auto;
+            background-color: #ffffff;
+            padding: 50px 40px 70px;
+            border-radius: 12px;
+            box-shadow: 0 15px 35px rgba(212, 106, 126, 0.15);
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 1.5s ease 0.5s, transform 1.5s ease 0.5s;
+            position: relative;
+            z-index: 20;
+        }
+        #letter-content.show { opacity: 1; transform: translateY(0); }
+
+        h1 { font-size: 28px; margin-bottom: 40px; color: #d46a7e; text-align: center; letter-spacing: 3px; }
+
+        /* 段落样式 */
+        p {
+            text-indent: 2em;
+            margin-bottom: 24px;
+            font-size: 18px;
+            text-align: justify;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.8s ease;
+        }
+        #letter-content.show p { opacity: 1; transform: translateY(0); }
+
+        /* 大号“To” */
+        .big-to {
+            font-size: 32px;
+            color: #d46a7e;
+            font-weight: bold;
+            font-family: 'Georgia', serif;
+        }
+
+        /* 拍立得照片墙 */
+        .photo-wall {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+        .polaroid {
+            background: #fff;
+            padding: 10px 10px 40px 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border: 1px solid #f0f0f0;
+            transition: transform 0.4s ease;
+        }
+        .polaroid:nth-child(1) { transform: rotate(-5deg); }
+        .polaroid:nth-child(2) { transform: rotate(5deg); }
+        .polaroid:hover { transform: scale(1.05) rotate(0deg); z-index: 30;}
+
+        /* 照片大小控制 */
+        .polaroid img {
+            width: 200px;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 2px;
+            display: block;
+        }
+
+        /* 署名 */
+        .signature {
+            margin-top: 60px;
+            text-align: right;
+            color: #8a7a6a;
+            text-indent: 0;
+            font-size: 17px;
+        }
+
+        /* 适配手机屏幕 */
+        @media (max-width: 600px) {
+            #letter-content { padding: 30px 20px 50px; margin: 20px auto; }
+            p { font-size: 17px; line-height: 2; }
+            .polaroid img { width: 130px; height: 130px; } /* 手机端照片变小一点 */
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 动态飘落花瓣 -->
+    <div id="petals-container"></div>
+
+    <!-- 遮罩层 -->
+    <div id="overlay">
+        <div class="heart-icon">❤️</div>
+        <p>轻触屏幕，打开这封信</p >
+        <small>（同时会响起为你选的一首歌）</small>
+    </div>
+
+    <!-- 信纸内容 -->
+    <div id="letter-content">
+        <h1>写给你的信</h1>
+
+        <!-- 👇 放照片的位置（两张照片） 👇 -->
+        <div class="photo-wall">
+            <div class="polaroid">
+                <img src="/static/photo1.jpg" alt="回忆1">
+            </div>
+            <div class="polaroid">
+                <img src="/static/photo2.jpg" alt="回忆2">
+            </div>
+        </div>
+
+        <!-- 👇 你的情书正文 👇 -->
+        <p><span class="big-to">To</span> 梦瑶：</p >
+
+        <p>开始读了吗，耳边有响起我的声音吗？</p >
+
+        <p>还记得吗，我之前说我要是送花肯定第一个送给你，其实从那时候开始就觉得欠你一束花，现在到兑现的时候了。</p >
+
+        <p>可能是我比较老套吧，我一直觉得恋爱应该是从一束花和一段告白开始，那么当你看到这段话的时候应该已经收到我送给你的花了，现在就只差告白了。</p >
+
+        <p>不知道是什么时候，我开始在意你，在意你在做什么，在意你为什么没有回复我的信息，在意我的哪句话会让你不开心，你知道吗，有时候你给我发来一条讯息我甚至要为此来想好久才会回复你，怕我哪句话词不达意会让你不开心。后来从一次次聊天相处下来，我慢慢确定了自己的心意，我喜欢你，喜欢你可爱的模样，喜欢你的善良，喜欢你的温柔，喜欢你的责任心，喜欢你和我说话时可爱的声音，喜欢打视频时你可爱又俏皮的模样，我总是夸你好看，但是其实和这些相比漂亮也只不过是你的一个小优点了。</p >
+        <p>我不是一个特别暖心的人，甚至可能有时候说话会让人很头大，但我希望在你眼里我依然是很好的那一个，可能我们的新鲜感会慢慢过去，会产生厌倦，会发现彼此的缺点，但喜欢是时间可以把所有的装扮都拿掉我还是依旧会觉得你好可爱，我依然会想要和你在一起，依然会喜欢你，就算之后我们会有争吵会有矛盾，我也希望我们可以一起把问题解决，和你在一起对我来说就是一件很好很好很好很好的事情，你是一个很好很好很好很好的人，我也很喜欢很喜欢很喜欢很喜欢你，我从未想过通过朋友介绍的你会是一个这么可爱这么好的人，会让我为你着迷，也许这就是缘分，其实与你相识是我完全意料之外的事，如果少一点契机我们都不会走到这一步，所以我很珍惜与你的缘分，也许当时去鸡鸣寺烧的香真的起了作用，缘分让我认识了你 一个可爱的小梦瑶。</p >
+        <p>其实我一直在想我们发展得太快，过早的告白会不会让你认为我是一个很随便的人，我不是一个随便开始的人，就像我和你说的我想我们是一个正式的关系所以一定要正式地给你说，我见过太多人匆匆相遇又匆匆告别，也听过很多新鲜感一过就散的故事，所以在我发现自己的心意之后我没有急着告白，而是偷偷观察，观察你也观察我自己，我确认我喜欢你，不是因为你刚好出现在我寂寞的时候，只是因为你是你，我想和你慢慢来，不是只想和你搞暧昧，更不是不想和你在一起，而是想和你在一起久一点再久一点，一直在一起，不论之后我们经历什么我都希望陪在你身边的那个人是我，想每天和你从早安聊到晚安，想和你一起度过一个又一个春夏秋冬，我想了解你的过去，霸占你的现在，更想参与你的未来。我不想再等了，易梦瑶 往后的日子还有很多，我想对你说来日方长，你愿意让我做你的男朋友吗？</p >
+        <p> ❤</p >
+
+        <!-- 👇 署名 👇 -->
+        <div class="signature">
+            一个喜欢你的 入<br>
+            2026年11月1日
+        </div>
+    </div>
+
+    <!-- 音乐播放器 -->
+    <audio id="bg-music" src="/static/our_song.mp3" loop preload="auto"></audio>
+
+    <script>
+        const overlay = document.getElementById('overlay');
+        const letter = document.getElementById('letter-content');
+        const music = document.getElementById('bg-music');
+
+        overlay.addEventListener('click', function () {
+            music.play().catch(function (err) {
+                console.log('音乐播放未启动:', err);
+            });
+            overlay.classList.add('hidden');
+            letter.classList.add('show');
+
+            const paragraphs = document.querySelectorAll('#letter-content p');
+            paragraphs.forEach((p, index) => {
+                setTimeout(() => {
+                    p.style.transitionDelay = `${index * 0.5}s`;
+                }, 100);
+            });
+        });
+
+        function createPetal() {
+            const petal = document.createElement('div');
+            petal.classList.add('snowflake');
+            petal.innerText = Math.random() > 0.5 ? '🌸' : '✨';
+            petal.style.left = Math.random() * 100 + 'vw';
+            petal.style.animationDuration = Math.random() * 3 + 3 + 's';
+            petal.style.opacity = Math.random() * 0.5 + 0.3;
+            petal.style.fontSize = Math.random() * 10 + 10 + 'px';
+
+            document.getElementById('petals-container').appendChild(petal);
+
+            setTimeout(() => {
+                petal.remove();
+            }, 6000);
+        }
+
+        setInterval(createPetal, 300);
+    </script>
+</body>
+</html>
